@@ -928,15 +928,31 @@ public class DataMungerTest {
 	@Test
 	public void testWithWhereThreeConditionsOrderBy() throws FileNotFoundException {
 
+		int totalRecordsExpected = 278;
+
 		HashMap dataSet = query.executeQuery(
-				"select season,winner,player_of_match,city,team1,team2 from data/ipl.csv where season >= 2013 or toss_decision != bat and city = Bangalore order by winner");
+				"select winner,player_of_match,city,team1,team2 from data/ipl.csv where season >= 2013 or toss_decision != bat and city = Bangalore order by winner");
+
+		boolean totalColumnsExpected = dataSet.entrySet().iterator().next().toString().split(",").length == 5;
 
 		assertNotNull("testWithWhereThreeConditionsOrderBy() : Empty Dataset returned", dataSet);
+		assertEquals("testWithWhereThreeConditionsOrderBy() : Total number of records should be 278",
+				totalRecordsExpected, dataSet.size());
+		assertEquals("testWithWhereThreeConditionsOrderBy() : Total number of columns should be 5", true,
+				totalColumnsExpected);
 
 		assertTrue(
 				"testWithWhereThreeConditionsOrderBy() : Total number of records are matching but the records returned does not match the expected data",
 				dataSet.toString().contains(
-						"winner=Kolkata Knight Riders, player_of_match=BB McCullum, city=Bangalore, team1=Kolkata Knight Riders, team2=Royal Challengers Bangalore"));
+						"1={winner=, player_of_match=, city=Bangalore, team1=Royal Challengers Bangalore, team2=Rajasthan Royals}"));
+		assertTrue(
+				"testWithWhereThreeConditionsOrderBy() : Total number of records are matching but the records returned does not match the expected data",
+				dataSet.toString().contains(
+						"139={winner=Mumbai Indians, player_of_match=SR Tendulkar, city=Mumbai, team1=Mumbai Indians, team2=Kolkata Knight Riders}"));
+		assertTrue(
+				"testWithWhereThreeConditionsOrderBy() : Total number of records are matching but the records returned does not match the expected data",
+				dataSet.toString().contains(
+						"278={winner=Sunrisers Hyderabad, player_of_match=BCJ Cutting, city=Bangalore, team1=Sunrisers Hyderabad, team2=Royal Challengers Bangalore}"));
 
 		assertTrue("testWithWhereThreeConditionsOrderBy() : Writing data into json format has failed",
 				jsonWriter.writeToJson(dataSet));
@@ -953,10 +969,13 @@ public class DataMungerTest {
 		HashMap dataSet = query.executeQuery(
 				"select city,winner,team1,team2,player_of_match from data/ipl.csv where season >= 2013 or toss_decision != bat and city = Bangalore group by team1");
 
+		boolean totalColumnsExpected = dataSet.entrySet().iterator().next().toString().split(",").length == 30;
 		boolean dataExpectedStatus = (dataSet.toString().contains(
-				"winner=Kolkata Knight Riders, player_of_match=BB McCullum, city=Bangalore, team1=Kolkata Knight Riders, team2=Royal Challengers Bangalore"));
+				"{Kolkata Knight Riders={1={winner=Kolkata Knight Riders, player_of_match=BB McCullum, city=Bangalore, team1=Kolkata Knight Riders, team2=Royal Challengers Bangalore}, 158={winner=Royal Challengers Bangalore, player_of_match=R Vinay Kumar, city=Bangalore, team1=Kolkata Knight Riders, team2=Royal Challengers Bangalore}, 232={winner=Royal Challengers Bangalore, player_of_match=CH Gayle, city=Bangalore, team1=Kolkata Knight Riders, team2=Royal Challengers Bangalore}, 258={winner=Kolkata Knight Riders, player_of_match=L Balaji, city=Bangalore, team1=Kolkata Knight Riders, team2=Royal Challengers Bangalore}, 333={winner=Royal Challengers Bangalore, player_of_match=CH Gayle, city=Bangalore, team1=Kolkata Knight Riders, team2=Royal Challengers Bangalore}, 491={winner=Royal Challengers Bangalore, player_of_match=Mandeep Singh, city=Bangalore, team1=Kolkata Knight Riders, team2=Royal Challengers Bangalore}}, Royal Challengers Bangalore={11={winner=Rajasthan Royals, player_of_match=SR Watson, city=Bangalore, team1=Royal Challengers Bangalore, team2=Rajasthan Royals}, 25={winner=Kings XI Punjab, player_of_match=S Sreesanth, city=Bangalore, team1=Royal Challengers Bangalore, team2=Kings XI Punjab}, 31={winner=Mumbai Indians, player_of_match=CRD Fernando, city=Bangalore, team1=Royal Challengers Bangalore, team2=Mumbai Indians}, 45={winner=Delhi Daredevils, player_of_match=SP Goswami, city=Bangalore, team1=Royal Challengers Bangalore, team2=Delhi Daredevils}, 52={winner=Royal Challengers Bangalore, player_of_match=P Kumar, city=Bangalore, team1=Royal Challengers Bangalore, team2=Deccan Chargers}, 133={winner=Royal Challengers Bangalore, player_of_match=RV Uthappa, city=Bangalore, team1=Royal Challengers Bangalore, team2=Chennai Super Kings}, 155={winner=Deccan Chargers, player_of_match=TL Suman, city=Bangalore, team1=Royal Challengers Bangalore, team2=Deccan Chargers}, 183={winner=Mumbai Indians, player_of_match=SR Tendulkar, city=Bangalore, team1=Royal Challengers Bangalore, team2=Mumbai Indians}, 209={winner=Royal Challengers Bangalore, player_of_match=V Kohli, city=Bangalore, team1=Royal Challengers Bangalore, team2=Pune Warriors}, 221={winner=Royal Challengers Bangalore, player_of_match=CH Gayle, city=Bangalore, team1=Royal Challengers Bangalore, team2=Kings XI Punjab}, 253={winner=Royal Challengers Bangalore, player_of_match=AB de Villiers, city=Bangalore, team1=Royal Challengers Bangalore, team2=Delhi Daredevils}, 291={winner=Kings XI Punjab, player_of_match=Azhar Mahmood, city=Bangalore, team1=Royal Challengers Bangalore, team2=Kings XI Punjab}, 308={winner=Mumbai Indians, player_of_match=AT Rayudu, city=Bangalore, team1=Royal Challengers Bangalore, team2=Mumbai Indians}, 324={winner=Royal Challengers Bangalore, player_of_match=CH Gayle, city=Bangalore, team1=Royal Challengers Bangalore, team2=Mumbai Indians}, 352={winner=Royal Challengers Bangalore, player_of_match=CH Gayle, city=Bangalore, team1=Royal Challengers Bangalore, team2=Pune Warriors}, 370={winner=Kings XI Punjab, player_of_match=AC Gilchrist, city=Bangalore, team1=Royal Challengers Bangalore, team2=Kings XI Punjab}, 393={winner=Royal Challengers Bangalore, player_of_match=V Kohli, city=Bangalore, team1=Royal Challengers Bangalore, team2=Chennai Super Kings}, 433={winner=Rajasthan Royals, player_of_match=JP Faulkner, city=Bangalore, team1=Royal Challengers Bangalore, team2=Rajasthan Royals}, 436={winner=Royal Challengers Bangalore, player_of_match=Yuvraj Singh, city=Bangalore, team1=Royal Challengers Bangalore, team2=Delhi Daredevils}, 451={winner=Chennai Super Kings, player_of_match=MS Dhoni, city=Bangalore, team1=Royal Challengers Bangalore, team2=Chennai Super Kings}, 466={winner=Sunrisers Hyderabad, player_of_match=DA Warner, city=Bangalore, team1=Royal Challengers Bangalore, team2=Sunrisers Hyderabad}, 487={winner=, player_of_match=, city=Bangalore, team1=Royal Challengers Bangalore, team2=Rajasthan Royals}, 498={winner=Royal Challengers Bangalore, player_of_match=CH Gayle, city=Bangalore, team1=Royal Challengers Bangalore, team2=Kings XI Punjab}, 521={winner=Royal Challengers Bangalore, player_of_match=AB de Villiers, city=Bangalore, team1=Royal Challengers Bangalore, team2=Sunrisers Hyderabad}, 528={winner=Delhi Daredevils, player_of_match=Q de Kock, city=Bangalore, team1=Royal Challengers Bangalore, team2=Delhi Daredevils}, 547={winner=Kolkata Knight Riders, player_of_match=AD Russell, city=Bangalore, team1=Royal Challengers Bangalore, team2=Kolkata Knight Riders}, 558={winner=Mumbai Indians, player_of_match=KH Pandya, city=Bangalore, team1=Royal Challengers Bangalore, team2=Mumbai Indians}, 561={winner=Royal Challengers Bangalore, player_of_match=AB de Villiers, city=Bangalore, team1=Royal Challengers Bangalore, team2=Gujarat Lions}, 567={winner=Royal Challengers Bangalore, player_of_match=V Kohli, city=Bangalore, team1=Royal Challengers Bangalore, team2=Kings XI Punjab}}, Chennai Super Kings={15={winner=Chennai Super Kings, player_of_match=MS Dhoni, city=Bangalore, team1=Chennai Super Kings, team2=Royal Challengers Bangalore}, 243={winner=Royal Challengers Bangalore, player_of_match=CH Gayle, city=Bangalore, team1=Chennai Super Kings, team2=Royal Challengers Bangalore}, 320={winner=Chennai Super Kings, player_of_match=MS Dhoni, city=Bangalore, team1=Chennai Super Kings, team2=Mumbai Indians}, 479={winner=Chennai Super Kings, player_of_match=SK Raina, city=Bangalore, team1=Chennai Super Kings, team2=Royal Challengers Bangalore}}, Kings XI Punjab={122={winner=Royal Challengers Bangalore, player_of_match=JH Kallis, city=Bangalore, team1=Kings XI Punjab, team2=Royal Challengers Bangalore}, 429={winner=Kings XI Punjab, player_of_match=Sandeep Sharma, city=Bangalore, team1=Kings XI Punjab, team2=Royal Challengers Bangalore}, 458={winner=Kolkata Knight Riders, player_of_match=MK Pandey, city=Bangalore, team1=Kings XI Punjab, team2=Kolkata Knight Riders}}, Rajasthan Royals={125={winner=Royal Challengers Bangalore, player_of_match=JH Kallis, city=Bangalore, team1=Rajasthan Royals, team2=Royal Challengers Bangalore}, 267={winner=Rajasthan Royals, player_of_match=AM Rahane, city=Bangalore, team1=Rajasthan Royals, team2=Royal Challengers Bangalore}, 348={winner=Royal Challengers Bangalore, player_of_match=R Vinay Kumar, city=Bangalore, team1=Rajasthan Royals, team2=Royal Challengers Bangalore}}, Delhi Daredevils={138={winner=Delhi Daredevils, player_of_match=KM Jadhav, city=Bangalore, team1=Delhi Daredevils, team2=Royal Challengers Bangalore}, 342={winner=Royal Challengers Bangalore, player_of_match=V Kohli, city=Bangalore, team1=Delhi Daredevils, team2=Royal Challengers Bangalore}, 512={winner=, player_of_match=, city=Bangalore, team1=Delhi Daredevils, team2=Royal Challengers Bangalore}}, Mumbai Indians={167={winner=Mumbai Indians, player_of_match=R McLaren, city=Bangalore, team1=Mumbai Indians, team2=Royal Challengers Bangalore}, 475={winner=Mumbai Indians, player_of_match=Harbhajan Singh, city=Bangalore, team1=Mumbai Indians, team2=Royal Challengers Bangalore}}, Kochi Tuskers Kerala={224={winner=Royal Challengers Bangalore, player_of_match=CH Gayle, city=Bangalore, team1=Kochi Tuskers Kerala, team2=Royal Challengers Bangalore}}, Pune Warriors={270={winner=Royal Challengers Bangalore, player_of_match=CH Gayle, city=Bangalore, team1=Pune Warriors, team2=Royal Challengers Bangalore}}, Deccan Chargers={297={winner=Royal Challengers Bangalore, player_of_match=AB de Villiers, city=Bangalore, team1=Deccan Chargers, team2=Royal Challengers Bangalore}}, Sunrisers Hyderabad={373={winner=Royal Challengers Bangalore, player_of_match=V Kohli, city=Bangalore, team1=Sunrisers Hyderabad, team2=Royal Challengers Bangalore}, 422={winner=Royal Challengers Bangalore, player_of_match=AB de Villiers, city=Bangalore, team1=Sunrisers Hyderabad, team2=Royal Challengers Bangalore}, 577={winner=Sunrisers Hyderabad, player_of_match=BCJ Cutting, city=Bangalore, team1=Sunrisers Hyderabad, team2=Royal Challengers Bangalore}}, Rising Pune Supergiants={552={winner=Royal Challengers Bangalore, player_of_match=V Kohli, city=Bangalore, team1=Rising Pune Supergiants, team2=Royal Challengers Bangalore}}, Gujarat Lions={574={winner=Royal Challengers Bangalore, player_of_match=AB de Villiers, city=Bangalore, team1=Gujarat Lions, team2=Royal Challengers Bangalore}}}"));
 
 		assertNotNull("testWithWhereThreeConditionsGroupBy() : Empty Dataset returned", dataSet);
+		assertEquals("testWithWhereThreeConditionsGroupBy() : Total number of columns should be 5", true,
+				totalColumnsExpected);
 		assertEquals(
 				"testWithWhereThreeConditionsGroupBy() : Total number of records are matching but the records returned does not match the expected data",
 				true, dataExpectedStatus);
@@ -984,14 +1003,14 @@ public class DataMungerTest {
 
 		assertTrue("testWithOrderBy() : Count for the city Bangalore does not match the expected value",
 				dataSet.toString().contains(
-						"player_of_match=PA Patel, city=, team1=Mumbai Indians, team2=Royal Challengers Bangalore"));
+						"1={player_of_match=PA Patel, city=, team1=Mumbai Indians, team2=Royal Challengers Bangalore}"));
 		assertTrue("testWithOrderBy() : Count for the city Bangalore does not match the expected value",
 				dataSet.toString().contains(
-						"player_of_match=DJ Bravo, city=Hyderabad, team1=Mumbai Indians, team2=Deccan Chargers"));
+						"288={player_of_match=DJ Bravo, city=Hyderabad, team1=Mumbai Indians, team2=Deccan Chargers}"));
 		assertTrue(
 				"testWithOrderBy() : Total number of records are matching but the records returned does not match the expected data",
 				dataSet.toString().contains(
-						"player_of_match=MS Dhoni, city=Visakhapatnam, team1=Kings XI Punjab, team2=Rising Pune Supergiants"));
+						"577={player_of_match=MS Dhoni, city=Visakhapatnam, team1=Kings XI Punjab, team2=Rising Pune Supergiants}"));
 
 		assertTrue("testWithOrderBy() : Writing data into json format has failed", jsonWriter.writeToJson(dataSet));
 		assertTrue("testWithOrderBy() : Json file is empty, no data is written",
