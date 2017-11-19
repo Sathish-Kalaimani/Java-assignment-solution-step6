@@ -5,22 +5,23 @@ package com.stackroute.datamunger.query.parser;
  * each conditions
  * */
 public class Restriction {
-
+	
+	private String propertyName;
+	private String propertyValue;
+	private String condition;
+	public Restriction(String propertyName, String propertyValue, String condition) {
+		this.propertyName = propertyName;
+		this.propertyValue = propertyValue;
+		this.condition = condition;
+	}
 	public String getPropertyName() {
-		// TODO Auto-generated method stub
-		return null;
+		return propertyName;
 	}
-
 	public String getPropertyValue() {
-		// TODO Auto-generated method stub
-		return null;
+		return propertyValue;
 	}
-
 	public String getCondition() {
-		// TODO Auto-generated method stub
-		return null;
+		return condition;
 	}
-	
-	
 
 }

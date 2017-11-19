@@ -14,6 +14,8 @@ public class JsonWriter {
 	 * writing, the method will return true, else will return false
 	 */
 	public boolean writeToJson(Map resultSet) {
+
+		BufferedWriter writer = null;
 		/*
 		 * Gson is a third party library to convert Java object to JSON. We will use
 		 * Gson to convert resultSet object to JSON
@@ -24,9 +26,24 @@ public class JsonWriter {
 		 * write JSON string to data/result.json file. As we are performing File IO,
 		 * consider handling exception
 		 */
-		/* return true if file writing is successful */
-		/* return false if file writing is failed */
-		/* close BufferedWriter object */
-		return false;
+		try {
+			writer = new BufferedWriter(new FileWriter("data/result.json"));
+			writer.write(result);
+			return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("File writing failed");
+
+			return false;
+		} finally {
+			try {
+				writer.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
 	}
+
 }
